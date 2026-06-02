@@ -1,31 +1,33 @@
 package com.transfert.domain.model;
 
-import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
 public class DossierTransfert {
-    private final UUID id;
-    private final Etablissement etablissementSource;
-    private final Etudiant etudiant;
+    private UUID id;
+    private Etablissement etablissementSource;
+    private Etudiant etudiant;
     private StatutDossier statut;
-    private final LocalDateTime dateCreation;
+    private LocalDateTime dateCreation;
     private LocalDateTime dateValidationSource;
     private LocalDateTime dateAcceptationCible;
     private String commentaireSource;
     private String commentaireCible;
 
-    private DossierTransfert(Builder builder) {
-        this.id = builder.id;
-        this.etablissementSource = builder.etablissementSource;
-        this.etudiant = builder.etudiant;
-        this.statut = builder.statut;
-        this.dateCreation = builder.dateCreation;
-        this.dateValidationSource = builder.dateValidationSource;
-        this.dateAcceptationCible = builder.dateAcceptationCible;
-        this.commentaireSource = builder.commentaireSource;
-        this.commentaireCible = builder.commentaireCible;
+    protected DossierTransfert() {}
+
+    public DossierTransfert(UUID id, Etablissement etablissementSource, Etudiant etudiant, StatutDossier statut,
+                            LocalDateTime dateCreation, LocalDateTime dateValidationSource,
+                            LocalDateTime dateAcceptationCible, String commentaireSource, String commentaireCible) {
+        this.id = id;
+        this.etablissementSource = etablissementSource;
+        this.etudiant = etudiant;
+        this.statut = statut;
+        this.dateCreation = dateCreation;
+        this.dateValidationSource = dateValidationSource;
+        this.dateAcceptationCible = dateAcceptationCible;
+        this.commentaireSource = commentaireSource;
+        this.commentaireCible = commentaireCible;
     }
 
     public static class Builder {
@@ -51,11 +53,12 @@ public class DossierTransfert {
             if (!etablissementSource.peutCreerDossier())
                 throw new IllegalArgumentException("Cet établissement n'a pas le droit de créer un dossier source");
             if (etudiant == null) throw new IllegalArgumentException("Étudiant obligatoire");
-            return new DossierTransfert(this);
+            return new DossierTransfert(id, etablissementSource, etudiant, statut, dateCreation,
+                    dateValidationSource, dateAcceptationCible, commentaireSource, commentaireCible);
         }
     }
 
-    // Méthodes métier (modifient l'état)
+    // Méthodes métier
     public void validerParSource(String commentaire) {
         if (this.statut != StatutDossier.BROUILLON)
             throw new IllegalStateException("Seul un dossier en BROUILLON peut être validé par la source");
@@ -96,4 +99,15 @@ public class DossierTransfert {
             throw new IllegalStateException("Un dossier accepté ou refusé ne peut être annulé");
         this.statut = StatutDossier.ANNULE;
     }
+
+    // Getters
+    public UUID getId() { return id; }
+    public Etablissement getEtablissementSource() { return etablissementSource; }
+    public Etudiant getEtudiant() { return etudiant; }
+    public StatutDossier getStatut() { return statut; }
+    public LocalDateTime getDateCreation() { return dateCreation; }
+    public LocalDateTime getDateValidationSource() { return dateValidationSource; }
+    public LocalDateTime getDateAcceptationCible() { return dateAcceptationCible; }
+    public String getCommentaireSource() { return commentaireSource; }
+    public String getCommentaireCible() { return commentaireCible; }
 }

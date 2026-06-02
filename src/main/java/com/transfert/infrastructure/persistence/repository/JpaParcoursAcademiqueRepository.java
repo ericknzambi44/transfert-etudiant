@@ -28,7 +28,3 @@ public class JpaParcoursAcademiqueRepository implements ParcoursAcademiqueReposi
         return jpaRepository.findByDossierId(dossierId).map(mapper::toDomain);
     }
 }
-
-interface SpringDataParcoursAcademiqueRepository extends org.springframework.data.jpa.repository.JpaRepository<ParcoursAcademiqueEntity, UUID> {
-    Optional<ParcoursAcademiqueEntity> findByDossierId(UUID dossierId);
-}

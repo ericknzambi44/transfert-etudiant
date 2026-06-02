@@ -1,28 +1,31 @@
 package com.transfert.domain.model;
 
-import lombok.Getter;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-@Getter
 public class Etudiant {
-    private final UUID id;
-    private final String nom;
-    private final String prenom;
-    private final String email;
-    private final LocalDate dateNaissance;
-    private final String identifiantNational;
+    private UUID id;
+    private String nom;
+    private String prenom;
+    private String email;
+    private LocalDate dateNaissance;
+    private String identifiantNational;
 
-    private Etudiant(Builder builder) {
-        this.id = builder.id;
-        this.nom = builder.nom;
-        this.prenom = builder.prenom;
-        this.email = builder.email;
-        this.dateNaissance = builder.dateNaissance;
-        this.identifiantNational = builder.identifiantNational;
+    // Constructeur par défaut pour JPA/MapStruct (protected)
+    protected Etudiant() {}
+
+    // Constructeur complet pour MapStruct
+    public Etudiant(UUID id, String nom, String prenom, String email, LocalDate dateNaissance, String identifiantNational) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.dateNaissance = dateNaissance;
+        this.identifiantNational = identifiantNational;
     }
 
+    // Builder
     public static class Builder {
         private UUID id = UUID.randomUUID();
         private String nom;
@@ -47,7 +50,15 @@ public class Etudiant {
                 throw new IllegalArgumentException("Date de naissance invalide");
             if (identifiantNational != null && !identifiantNational.matches("^[A-Z0-9]{8,12}$"))
                 throw new IllegalArgumentException("Identifiant national doit être 8-12 caractères alphanumériques majuscules");
-            return new Etudiant(this);
+            return new Etudiant(id, nom, prenom, email, dateNaissance, identifiantNational);
         }
     }
+
+    // Getters
+    public UUID getId() { return id; }
+    public String getNom() { return nom; }
+    public String getPrenom() { return prenom; }
+    public String getEmail() { return email; }
+    public LocalDate getDateNaissance() { return dateNaissance; }
+    public String getIdentifiantNational() { return identifiantNational; }
 }

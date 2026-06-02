@@ -51,8 +51,3 @@ public class JpaDossierTransfertRepository implements DossierTransfertRepository
     }
 }
 
-interface SpringDataDossierTransfertRepository extends org.springframework.data.jpa.repository.JpaRepository<DossierTransfertEntity, UUID> {
-    List<DossierTransfertEntity> findByEtudiantEmail(String email);
-    List<DossierTransfertEntity> findByEtablissementSourceId(UUID etablissementId);
-    boolean existsByEtudiantEmailAndStatutNot(String email, String statut);
-}

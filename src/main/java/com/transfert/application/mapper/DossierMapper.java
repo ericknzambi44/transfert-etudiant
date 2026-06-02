@@ -1,4 +1,3 @@
-// application/mapper/DossierMapper.java
 package com.transfert.application.mapper;
 
 import com.transfert.application.dto.CreationDossierRequest;
@@ -27,12 +26,12 @@ public interface DossierMapper {
     default List<UniteEnseignement> toUniteEnseignements(List<CreationDossierRequest.UniteDTO> dtos) {
         if (dtos == null) return List.of();
         return dtos.stream()
-                .map(dto -> UniteEnseignement.builder()
-                        .code(dto.getCode())
-                        .nom(dto.getNom())
-                        .credits(dto.getCredits())
-                        .note(dto.getNote())
-                        .build())
+                .map(dto -> new UniteEnseignement(
+                        dto.getCode(),
+                        dto.getNom(),
+                        dto.getCredits(),
+                        dto.getNote()
+                ))
                 .collect(Collectors.toList());
     }
 

@@ -1,4 +1,3 @@
-// infrastructure/persistence/entity/EtablissementEntity.java
 package com.transfert.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
@@ -8,9 +7,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "etablissement")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class EtablissementEntity {
     @Id
     private UUID id;
@@ -19,7 +18,7 @@ public class EtablissementEntity {
     private String adresse;
     @Column(nullable = false, unique = true)
     private String emailContact;
-    private String password; // pour l'authentification
+    private String password;
     @Enumerated(EnumType.STRING)
     private RoleEtablissement role;
     private boolean actif;

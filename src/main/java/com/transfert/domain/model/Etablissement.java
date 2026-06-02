@@ -1,25 +1,25 @@
 package com.transfert.domain.model;
 
-import lombok.Getter;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-@Getter
 public class Etablissement {
-    private final UUID id;
-    private final String nom;
-    private final String adresse;
-    private final String emailContact;
-    private final RoleEtablissement role;
-    private final boolean actif;
+    private UUID id;
+    private String nom;
+    private String adresse;
+    private String emailContact;
+    private RoleEtablissement role;
+    private boolean actif;
 
-    private Etablissement(Builder builder) {
-        this.id = builder.id;
-        this.nom = builder.nom;
-        this.adresse = builder.adresse;
-        this.emailContact = builder.emailContact;
-        this.role = builder.role;
-        this.actif = builder.actif;
+    protected Etablissement() {}
+
+    public Etablissement(UUID id, String nom, String adresse, String emailContact, RoleEtablissement role, boolean actif) {
+        this.id = id;
+        this.nom = nom;
+        this.adresse = adresse;
+        this.emailContact = emailContact;
+        this.role = role;
+        this.actif = actif;
     }
 
     public static class Builder {
@@ -41,11 +41,10 @@ public class Etablissement {
             if (nom == null || nom.isBlank()) throw new IllegalArgumentException("Le nom est obligatoire");
             if (emailContact == null || !Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", emailContact))
                 throw new IllegalArgumentException("Email invalide");
-            return new Etablissement(this);
+            return new Etablissement(id, nom, adresse, emailContact, role, actif);
         }
     }
 
-    // Méthodes métier
     public boolean peutCreerDossier() {
         return actif && (role == RoleEtablissement.SOURCE || role == RoleEtablissement.BOTH);
     }
@@ -53,4 +52,12 @@ public class Etablissement {
     public boolean peutAccepterEnCible() {
         return actif && (role == RoleEtablissement.CIBLE || role == RoleEtablissement.BOTH);
     }
+
+    // Getters
+    public UUID getId() { return id; }
+    public String getNom() { return nom; }
+    public String getAdresse() { return adresse; }
+    public String getEmailContact() { return emailContact; }
+    public RoleEtablissement getRole() { return role; }
+    public boolean isActif() { return actif; }
 }

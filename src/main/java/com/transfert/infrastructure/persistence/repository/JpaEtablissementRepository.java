@@ -39,7 +39,3 @@ public class JpaEtablissementRepository implements EtablissementRepository {
     }
 }
 
-interface SpringDataEtablissementRepository extends org.springframework.data.jpa.repository.JpaRepository<EtablissementEntity, UUID> {
-    Optional<EtablissementEntity> findByEmailContact(String email);
-    boolean existsByNom(String nom);
-}
