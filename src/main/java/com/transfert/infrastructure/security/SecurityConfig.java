@@ -1,4 +1,3 @@
-// infrastructure/security/SecurityConfig.java
 package com.transfert.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -29,12 +30,15 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/etablissements/register", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/dossiers/**").authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/etablissements/register")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
-            .headers().frameOptions().disable(); // pour H2 console
+            .headers(headers -> headers.frameOptions().disable());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
