@@ -1,26 +1,33 @@
-// application/mapper/ParcoursMapper.java
 package com.transfert.application.mapper;
 
 import com.transfert.application.dto.ParcoursResponse;
 import com.transfert.domain.model.ParcoursAcademique;
 import com.transfert.domain.model.UniteEnseignement;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface ParcoursMapper {
-    @Mapping(target = "unites", expression = "java(toUniteResponses(parcours.getUnitesValidees()))")
-    ParcoursResponse toResponse(ParcoursAcademique parcours);
+@Component
+public class ParcoursMapper {
 
-    default List<ParcoursResponse.UniteResponse> toUniteResponses(List<UniteEnseignement> unites) {
-        return unites.stream().map(ue -> {
-            ParcoursResponse.UniteResponse resp = new ParcoursResponse.UniteResponse();
-            resp.setCode(ue.getCode());
-            resp.setNom(ue.getNom());
-            resp.setCredits(ue.getCredits());
-            resp.setNote(ue.getNote());
-            return resp;
-        }).collect(java.util.stream.Collectors.toList());
+    public ParcoursResponse toResponse(ParcoursAcademique parcours) {
+        if (parcours == null) return null;
+        ParcoursResponse response = new ParcoursResponse();
+        response.setIntituleDiplome(parcours.getIntituleDiplome());
+        response.setCreditsObtenus(parcours.getCreditsObtenus());
+        List<ParcoursResponse.UniteResponse> unites = parcours.getUnitesValidees().stream()
+                .map(this::toUniteResponse)
+                .collect(Collectors.toList());
+        response.setUnites(unites);
+        return response;
+    }
+
+    private ParcoursResponse.UniteResponse toUniteResponse(UniteEnseignement ue) {
+        ParcoursResponse.UniteResponse resp = new ParcoursResponse.UniteResponse();
+        resp.setCode(ue.getCode());
+        resp.setNom(ue.getNom());
+        resp.setCredits(ue.getCredits());
+        resp.setNote(ue.getNote());
+        return resp;
     }
 }

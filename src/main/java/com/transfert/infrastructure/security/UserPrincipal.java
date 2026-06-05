@@ -11,15 +11,21 @@ public class UserPrincipal implements UserDetails {
     private final UUID id;
     private final String email;
     private final String password;
-    private final String role;
-    private final UUID etablissementId;
+    private final String role;   // "ETABLISSEMENT" ou "ETUDIANT"
+    private final UUID etablissementId; // null pour étudiants
+    private final String userType; // "ETABLISSEMENT" ou "ETUDIANT"
 
-    public UserPrincipal(UUID id, String email, String password, String role, UUID etablissementId) {
+    public UserPrincipal(UUID id, String email, String password, String role, UUID etablissementId, String userType) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
         this.etablissementId = etablissementId;
+        this.userType = userType;
+    }
+
+    public UserPrincipal(UUID id, String email, String password, String role, String userType) {
+        this(id, email, password, role, null, userType);
     }
 
     @Override
@@ -38,4 +44,5 @@ public class UserPrincipal implements UserDetails {
     public String getEmail() { return email; }
     public String getRole() { return role; }
     public UUID getEtablissementId() { return etablissementId; }
+    public String getUserType() { return userType; }
 }

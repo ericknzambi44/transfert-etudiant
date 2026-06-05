@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -22,20 +23,19 @@ public class CreerDossierUseCase {
     private final TransfertDomainService domainService;
     private final DossierMapper dossierMapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final HistoriqueRepository historiqueRepository;
 
     @Transactional
     public DossierTransfert execute(UUID etablissementSourceId, CreationDossierRequest request) {
         Etablissement source = etablissementRepository.findById(etablissementSourceId)
                 .orElseThrow(() -> new IllegalArgumentException("Établissement source non trouvé"));
-        if (!source.peutCreerDossier())
-            throw new IllegalStateException("Cet établissement n'est pas autorisé à créer des dossiers source");
+        // Plus de vérification sur le rôle (tous les établissements peuvent créer des dossiers)
 
         domainService.verifierUniciteTransfertActif(request.getEmailEtudiant());
 
         Etudiant etudiant = etudiantRepository.findByEmail(request.getEmailEtudiant())
                 .orElseGet(() -> etudiantRepository.save(dossierMapper.toEtudiant(request)));
 
-        // Correction : utiliser new DossierTransfert.Builder()
         DossierTransfert dossier = new DossierTransfert.Builder()
                 .etablissementSource(source)
                 .etudiant(etudiant)
@@ -45,6 +45,16 @@ public class CreerDossierUseCase {
 
         ParcoursAcademique parcours = dossierMapper.toParcours(savedDossier, request);
         parcoursRepository.save(parcours);
+
+        HistoriqueAction historique = HistoriqueAction.builder()
+                .action("CREATION_DOSSIER")
+                .description("Dossier créé pour l'étudiant " + etudiant.getEmail())
+                .utilisateurId(source.getId().toString())
+                .utilisateurType("ETABLISSEMENT")
+                .dossierId(savedDossier.getId())
+                .dateAction(LocalDateTime.now())
+                .build();
+        historiqueRepository.save(historique);
 
         eventPublisher.publishEvent(new TransfertCreeEvent(savedDossier));
         return savedDossier;

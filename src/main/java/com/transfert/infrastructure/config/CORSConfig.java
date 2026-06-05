@@ -1,4 +1,3 @@
-// infrastructure/config/CORSConfig.java
 package com.transfert.infrastructure.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CORSConfig implements WebMvcConfigurer {
-    @Value("${cors.allowed.origins}")
+
+    @Value("${cors.allowed.origins:http://localhost:1420}")
     private String allowedOrigins;
 
     @Override

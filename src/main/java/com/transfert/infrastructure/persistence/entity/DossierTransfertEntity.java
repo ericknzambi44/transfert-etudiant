@@ -1,4 +1,3 @@
-// infrastructure/persistence/entity/DossierTransfertEntity.java
 package com.transfert.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
@@ -14,6 +13,7 @@ import java.util.UUID;
 @Builder
 public class DossierTransfertEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
     @JoinColumn(name = "etablissement_source_id")

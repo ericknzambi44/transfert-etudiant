@@ -1,4 +1,3 @@
-// infrastructure/security/JwtTokenProvider.java
 package com.transfert.infrastructure.security;
 
 import io.jsonwebtoken.*;
@@ -9,10 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
+
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -31,7 +32,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(userPrincipal.getEmail())
                 .claim("role", userPrincipal.getRole())
-                .claim("etablissementId", userPrincipal.getEtablissementId().toString())
+                .claim("etablissementId", userPrincipal.getEtablissementId() != null ? userPrincipal.getEtablissementId().toString() : null)
+                .claim("userType", userPrincipal.getUserType())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key(), SignatureAlgorithm.HS512)

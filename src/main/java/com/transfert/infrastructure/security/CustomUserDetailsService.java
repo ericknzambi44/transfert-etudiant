@@ -1,38 +1,52 @@
-// infrastructure/security/CustomUserDetailsService.java
 package com.transfert.infrastructure.security;
 
 import com.transfert.infrastructure.persistence.entity.EtablissementEntity;
+import com.transfert.infrastructure.persistence.entity.EtudiantEntity;
 import com.transfert.infrastructure.persistence.repository.SpringDataEtablissementRepository;
+import com.transfert.infrastructure.persistence.repository.SpringDataEtudiantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final SpringDataEtablissementRepository etablissementRepository;
+    private final SpringDataEtudiantRepository etudiantRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        EtablissementEntity etablissement = etablissementRepository.findByEmailContact(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Établissement non trouvé avec email: " + email));
-        return new UserPrincipal(
-                etablissement.getId(),
-                etablissement.getEmailContact(),
-                etablissement.getPassword(),
-                etablissement.getRole().name(),
-                etablissement.getId()
-        );
-    }
-
-    // Pour l'admin (compte spécial)
-    public UserDetails loadAdminByUsername(String username) {
-        if ("admin@transfert.com".equals(username)) {
-            return new UserPrincipal(UUID.randomUUID(), username, "$2a$10$dummy", "ADMIN", null);
+        // Établissement
+        var etablissementOpt = etablissementRepository.findByEmailContact(email);
+        if (etablissementOpt.isPresent()) {
+            EtablissementEntity e = etablissementOpt.get();
+            return new UserPrincipal(
+                e.getId(),
+                e.getEmailContact(),
+                e.getPassword(),
+                "ETABLISSEMENT",
+                e.getId(),
+                "ETABLISSEMENT"
+            );
         }
-        throw new UsernameNotFoundException("Admin non trouvé");
+
+        // Étudiant
+        var etudiantOpt = etudiantRepository.findByEmail(email);
+        if (etudiantOpt.isPresent()) {
+            EtudiantEntity et = etudiantOpt.get();
+            return new UserPrincipal(
+                et.getId(),
+                et.getEmail(),
+                et.getPassword(),
+                "ETUDIANT",
+                null,
+                "ETUDIANT"
+            );
+        }
+
+        throw new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + email);
     }
 }

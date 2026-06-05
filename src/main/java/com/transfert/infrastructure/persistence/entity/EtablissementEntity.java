@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EtablissementEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(nullable = false, unique = true)
     private String nom;
@@ -19,11 +20,6 @@ public class EtablissementEntity {
     @Column(nullable = false, unique = true)
     private String emailContact;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private RoleEtablissement role;
     private boolean actif;
-
-    public enum RoleEtablissement {
-        SOURCE, CIBLE, BOTH
-    }
+   
 }

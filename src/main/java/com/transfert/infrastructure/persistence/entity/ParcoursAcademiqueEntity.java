@@ -1,4 +1,3 @@
-// infrastructure/persistence/entity/ParcoursAcademiqueEntity.java
 package com.transfert.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
@@ -14,6 +13,7 @@ import java.util.UUID;
 @Builder
 public class ParcoursAcademiqueEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
     private DossierTransfertEntity dossier;

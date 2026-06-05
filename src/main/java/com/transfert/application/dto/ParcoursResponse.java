@@ -1,4 +1,3 @@
-// application/dto/ParcoursResponse.java
 package com.transfert.application.dto;
 
 import lombok.Data;

@@ -1,4 +1,3 @@
-// domain/repository/DossierTransfertRepository.java
 package com.transfert.domain.repository;
 
 import com.transfert.domain.model.DossierTransfert;
@@ -14,4 +13,7 @@ public interface DossierTransfertRepository {
     List<DossierTransfert> findByEtablissementSourceId(UUID etablissementId);
     boolean existsByEtudiantEmailAndStatutNot(String email, StatutDossier exclu);
     void deleteById(UUID id);
+    
+   
+    void updateStatut(UUID id, StatutDossier statut);
 }

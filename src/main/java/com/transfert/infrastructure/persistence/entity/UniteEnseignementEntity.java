@@ -1,8 +1,6 @@
-// infrastructure/persistence/entity/UniteEnseignementEntity.java
 package com.transfert.infrastructure.persistence.entity;
 
 import java.util.UUID;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UniteEnseignementEntity {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String code;
     private String nom;

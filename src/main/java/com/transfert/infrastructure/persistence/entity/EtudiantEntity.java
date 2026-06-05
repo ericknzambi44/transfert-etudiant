@@ -1,4 +1,3 @@
-// infrastructure/persistence/entity/EtudiantEntity.java
 package com.transfert.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
@@ -14,6 +13,7 @@ import java.util.UUID;
 @Builder
 public class EtudiantEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(nullable = false)
     private String nom;
@@ -22,4 +22,5 @@ public class EtudiantEntity {
     private String email;
     private LocalDate dateNaissance;
     private String identifiantNational;
+    private String password; 
 }

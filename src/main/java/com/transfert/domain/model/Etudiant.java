@@ -11,21 +11,20 @@ public class Etudiant {
     private String email;
     private LocalDate dateNaissance;
     private String identifiantNational;
+    private String password;  // <-- NOUVEAU
 
-    // Constructeur par défaut pour JPA/MapStruct (protected)
     protected Etudiant() {}
 
-    // Constructeur complet pour MapStruct
-    public Etudiant(UUID id, String nom, String prenom, String email, LocalDate dateNaissance, String identifiantNational) {
+    public Etudiant(UUID id, String nom, String prenom, String email, LocalDate dateNaissance, String identifiantNational, String password) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.dateNaissance = dateNaissance;
         this.identifiantNational = identifiantNational;
+        this.password = password;
     }
 
-    // Builder
     public static class Builder {
         private UUID id = UUID.randomUUID();
         private String nom;
@@ -33,6 +32,7 @@ public class Etudiant {
         private String email;
         private LocalDate dateNaissance;
         private String identifiantNational;
+        private String password;
 
         public Builder id(UUID id) { this.id = id; return this; }
         public Builder nom(String nom) { this.nom = nom; return this; }
@@ -40,6 +40,7 @@ public class Etudiant {
         public Builder email(String email) { this.email = email; return this; }
         public Builder dateNaissance(LocalDate dateNaissance) { this.dateNaissance = dateNaissance; return this; }
         public Builder identifiantNational(String identifiantNational) { this.identifiantNational = identifiantNational; return this; }
+        public Builder password(String password) { this.password = password; return this; }
 
         public Etudiant build() {
             if (nom == null || nom.isBlank()) throw new IllegalArgumentException("Nom obligatoire");
@@ -50,7 +51,9 @@ public class Etudiant {
                 throw new IllegalArgumentException("Date de naissance invalide");
             if (identifiantNational != null && !identifiantNational.matches("^[A-Z0-9]{8,12}$"))
                 throw new IllegalArgumentException("Identifiant national doit être 8-12 caractères alphanumériques majuscules");
-            return new Etudiant(id, nom, prenom, email, dateNaissance, identifiantNational);
+            if (password == null || password.isBlank())
+                throw new IllegalArgumentException("Mot de passe obligatoire");
+            return new Etudiant(id, nom, prenom, email, dateNaissance, identifiantNational, password);
         }
     }
 
@@ -61,4 +64,5 @@ public class Etudiant {
     public String getEmail() { return email; }
     public LocalDate getDateNaissance() { return dateNaissance; }
     public String getIdentifiantNational() { return identifiantNational; }
+    public String getPassword() { return password; }
 }

@@ -67,17 +67,12 @@ public class DossierTransfert {
         this.commentaireSource = commentaire;
     }
 
-    public void consentirEtudiant() {
-        if (this.statut != StatutDossier.EN_ATTENTE_VALIDATION_SOURCE)
-            throw new IllegalStateException("Le consentement étudiant n'est possible qu'après validation source");
-        this.statut = StatutDossier.EN_ATTENTE_CONSENTEMENT_ETUDIANT;
-    }
 
-    public void mettreEnCoursCible() {
-        if (this.statut != StatutDossier.EN_ATTENTE_CONSENTEMENT_ETUDIANT)
-            throw new IllegalStateException("Impossible de passer en cours cible sans consentement");
-        this.statut = StatutDossier.EN_COURS_CIBLE;
-    }
+public void consentirEtudiant() {
+    if (this.statut != StatutDossier.EN_ATTENTE_VALIDATION_SOURCE)
+        throw new IllegalStateException("Le consentement étudiant n'est possible qu'après validation source");
+    
+}
 
     public void accepterParCible(String commentaire) {
         if (this.statut != StatutDossier.EN_COURS_CIBLE)

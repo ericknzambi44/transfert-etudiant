@@ -26,19 +26,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/etablissements/register")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .headers(headers -> headers.frameOptions().disable());
+        http
+            .cors(cors -> cors.configure(http))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+           
+    .authorizeHttpRequests(auth -> auth
+    .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/api/etablissements/register")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/api/etudiants/**")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/api/dossiers/*/consentement")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+    .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
+    .anyRequest().hasAnyRole("ETABLISSEMENT", "ETUDIANT")
+)
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

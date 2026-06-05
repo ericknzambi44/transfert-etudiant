@@ -1,4 +1,3 @@
-// infrastructure/persistence/repository/JpaDossierTransfertRepository.java
 package com.transfert.infrastructure.persistence.repository;
 
 import com.transfert.domain.model.DossierTransfert;
@@ -42,12 +41,18 @@ public class JpaDossierTransfertRepository implements DossierTransfertRepository
 
     @Override
     public boolean existsByEtudiantEmailAndStatutNot(String email, StatutDossier exclu) {
-        return jpaRepository.existsByEtudiantEmailAndStatutNot(email, exclu.name());
+        return jpaRepository.existsByEtudiantEmailAndStatutNot(email, 
+                DossierTransfertEntity.StatutDossier.valueOf(exclu.name()));
     }
 
     @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
     }
-}
 
+    
+@Override
+public void updateStatut(UUID id, StatutDossier statut) {
+    jpaRepository.updateStatut(id, DossierTransfertEntity.StatutDossier.valueOf(statut.name()));
+}
+}
