@@ -1,4 +1,3 @@
-// infrastructure/web/controller/AuthController.java
 package com.transfert.infrastructure.web.controller;
 
 import com.transfert.application.dto.ApiResponse;
@@ -36,6 +35,6 @@ public class AuthController {
         String jwt = tokenProvider.generateToken(authentication);
         var userDetails = (com.transfert.infrastructure.security.UserPrincipal) authentication.getPrincipal();
         return new ApiResponse<>(true, "Authentification réussie",
-                new AuthResponse(jwt, "Bearer", userDetails.getRole(), userDetails.getEtablissementId()));
+                new AuthResponse(jwt, "Bearer", userDetails.getRole(), userDetails.getUserType(), userDetails.getEtablissementId()));
     }
 }
