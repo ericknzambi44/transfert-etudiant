@@ -6,10 +6,15 @@ public class AuthResponse {
     private String token;
     private String type;
     private String role;
-    private String userType; // "ETABLISSEMENT" ou "ETUDIANT"
+    private String userType;
     private UUID etablissementId;
 
-    // Constructeur avec 5 paramètres
+    // Constructeur 4 parametres
+    public AuthResponse(String token, String type, String role, UUID etablissementId) {
+        this(token, type, role, null, etablissementId);
+    }
+
+    // Constructeur avec 5 paramètres (pour les étudiants)
     public AuthResponse(String token, String type, String role, String userType, UUID etablissementId) {
         this.token = token;
         this.type = type;
