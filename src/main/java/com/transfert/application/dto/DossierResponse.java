@@ -1,4 +1,3 @@
-// application/dto/DossierResponse.java
 package com.transfert.application.dto;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +10,7 @@ import java.util.UUID;
 public class DossierResponse {
     private UUID id;
     private String etablissementSourceNom;
+    private UUID etablissementSourceId;
     private String etudiantNom;
     private String etudiantPrenom;
     private String etudiantEmail;

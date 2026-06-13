@@ -46,6 +46,7 @@ public class DossierMapper {
         return new DossierResponse(
                 dossier.getId(),
                 dossier.getEtablissementSource().getNom(),
+                dossier.getEtablissementSource().getId(),
                 dossier.getEtudiant().getNom(),
                 dossier.getEtudiant().getPrenom(),
                 dossier.getEtudiant().getEmail(),

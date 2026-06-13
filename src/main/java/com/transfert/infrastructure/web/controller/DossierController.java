@@ -45,13 +45,22 @@ public class DossierController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<DossierResponse>>> listerDossiersSource(
             @AuthenticationPrincipal UserPrincipal user) {
-        // Seuls les établissements (pas les étudiants) peuvent lister leurs dossiers
         if (user.getUserType().equals("ETUDIANT")) {
             return ResponseEntity.status(403).body(new ApiResponse<>(false, "Accès réservé aux établissements", null));
         }
         List<DossierTransfert> dossiers = listerDossiersSourceUseCase.execute(user.getEtablissementId());
         List<DossierResponse> responses = dossiers.stream().map(dossierMapper::toResponse).toList();
         return ResponseEntity.ok(new ApiResponse<>(true, "Liste des dossiers", responses));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<DossierResponse>>> getMesDossiers(@AuthenticationPrincipal UserPrincipal user) {
+        if (!user.getUserType().equals("ETUDIANT")) {
+            return ResponseEntity.status(403).body(new ApiResponse<>(false, "Accès réservé aux étudiants", null));
+        }
+        List<DossierTransfert> dossiers = rechercherUseCase.execute(user.getUsername());
+        List<DossierResponse> responses = dossiers.stream().map(dossierMapper::toResponse).toList();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Mes dossiers", responses));
     }
 
     @GetMapping("/{id}")
@@ -84,11 +93,10 @@ public class DossierController {
             @AuthenticationPrincipal UserPrincipal user,
             @PathVariable UUID id,
             @Valid @RequestBody AcceptationCibleRequest request) {
-        // Seuls les établissements peuvent accepter/refuser
         if (user.getUserType().equals("ETUDIANT")) {
             return ResponseEntity.status(403).body(new ApiResponse<>(false, "Accès réservé aux établissements", null));
         }
-        DossierTransfert dossier = accepterTransfertUseCase.execute(id, request.getCommentaire(), request.isAccepte());
+        DossierTransfert dossier = accepterTransfertUseCase.execute(id, user.getEtablissementId(), request.getCommentaire(), request.isAccepte());
         return ResponseEntity.ok(new ApiResponse<>(true, request.isAccepte() ? "Transfert accepté" : "Transfert refusé", dossierMapper.toResponse(dossier)));
     }
 
